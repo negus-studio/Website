@@ -4,14 +4,10 @@ function initVimeoBGVideo() {
 
   vimeoPlayers.forEach(function(vimeoElement, index) {
     
-    // Choose Vimeo Video ID based on screen size
-    const isMobile = window.innerWidth <= 768; // Adjust breakpoint if needed
-    const vimeoVideoID = isMobile 
-      ? vimeoElement.getAttribute('data-vimeo-video-id-mobile') 
-      : vimeoElement.getAttribute('data-vimeo-video-id-desktop');
-    
+    // Add Vimeo URL ID to the iframe [src]
+    // Looks like: https://player.vimeo.com/video/1019191082
+    const vimeoVideoID = vimeoElement.getAttribute('data-vimeo-video-id');
     if (!vimeoVideoID) return;
-
     const vimeoVideoURL = `https://player.vimeo.com/video/${vimeoVideoID}?api=1&background=1&autoplay=0&loop=1&muted=1`;
     vimeoElement.querySelector('iframe').setAttribute('src', vimeoVideoURL);
 
@@ -23,7 +19,7 @@ function initVimeoBGVideo() {
     const player = new Vimeo.Player(iframeID);
 
     let videoAspectRatio;
-
+    
     // Update Aspect Ratio if [data-vimeo-update-size="true"]
     if (vimeoElement.getAttribute('data-vimeo-update-size') === 'true') {
       player.getVideoWidth().then(function(width) {
@@ -50,7 +46,7 @@ function initVimeoBGVideo() {
         }
       }
     }
-
+    
     // Adjust video sizing initially
     if (vimeoElement.getAttribute('data-vimeo-update-size') === 'true') {
       adjustVideoSizing();
@@ -122,6 +118,7 @@ function initVimeoBGVideo() {
         // If paused by user => kill the scroll-based autoplay
         if (vimeoElement.getAttribute('data-vimeo-autoplay') === 'true') {
           vimeoElement.setAttribute('data-vimeo-paused-by-user', 'true');
+          // Removing scroll listener (if you’d like)
           window.removeEventListener('scroll', checkVisibility);
         }
       });
