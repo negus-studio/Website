@@ -122,4 +122,4 @@ function isMobile() {
   // On resize
   window.addEventListener('resize', function() {
     updateMediaSources();
-  });  
+  });
