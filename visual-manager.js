@@ -1,56 +1,49 @@
-// Helper: Detect if device is mobile
+// Detect if device is mobile
 function isMobile() {
     return window.innerWidth <= 768;
   }
   
-  // Function: Update media sources
+  // Update media sources (images, generic iframes, etc.)
   function updateMediaSources() {
-    const mediaElements = document.querySelectorAll('.responsive-media');
+    const mediaElements = document.querySelectorAll('.responsive-media:not([data-vimeo-bg-init])');
   
     mediaElements.forEach(element => {
       const src = isMobile() ? element.getAttribute('data-src-mobile') : element.getAttribute('data-src-desktop');
-  
-      if (!src) return;
-  
-      if (element.tagName.toLowerCase() === 'img') {
-        if (element.src !== src) {
-          element.src = src;
-        }
-      } else if (element.tagName.toLowerCase() === 'iframe') {
-        if (element.src !== src) {
-          element.src = src;
-        }
+      if (src && element.src !== src) {
+        element.src = src;
       }
     });
   }
   
-  // Function: Initialize Vimeo Background Videos
+  // Initialize Vimeo Background Videos
   function initVimeoBGVideo() {
-    const vimeoPlayers = document.querySelectorAll('[data-vimeo-bg-init]');
+    const vimeoElements = document.querySelectorAll('[data-vimeo-bg-init]');
   
-    vimeoPlayers.forEach(function(vimeoElement, index) {
-      const vimeoVideoID = isMobile() 
-        ? vimeoElement.getAttribute('data-vimeo-video-id-mobile') 
-        : vimeoElement.getAttribute('data-vimeo-video-id-desktop');
-      if (!vimeoVideoID) return;
-  
-      const vimeoVideoURL = `https://player.vimeo.com/video/${vimeoVideoID}?api=1&background=1&autoplay=0&loop=1&muted=1`;
+    vimeoElements.forEach(function(vimeoElement, index) {
       const iframe = vimeoElement.querySelector('iframe');
       if (!iframe) return;
   
+      const mobileVideoID = vimeoElement.getAttribute('data-vimeo-video-id-mobile');
+      const desktopVideoID = vimeoElement.getAttribute('data-vimeo-video-id-desktop');
+      const videoID = isMobile() ? mobileVideoID : desktopVideoID;
+  
+      if (!videoID) return;
+  
+      const vimeoVideoURL = `https://player.vimeo.com/video/${videoID}?api=1&background=1&autoplay=0&loop=1&muted=1`;
       iframe.setAttribute('src', vimeoVideoURL);
   
       // Assign unique ID
       const videoIndexID = 'vimeo-bg-index-' + index;
       vimeoElement.setAttribute('id', videoIndexID);
   
-      const player = new Vimeo.Player(videoIndexID);
+      const player = new Vimeo.Player(iframe);
+  
       let videoAspectRatio;
   
-      // Update Aspect Ratio if needed
+      // Update aspect ratio if requested
       if (vimeoElement.getAttribute('data-vimeo-update-size') === 'true') {
         player.getVideoWidth().then(width => {
-          player.getVideoHeight().then(height => {
+          return player.getVideoHeight().then(height => {
             videoAspectRatio = height / width;
             const beforeEl = vimeoElement.querySelector('.vimeo-player__before');
             if (beforeEl) {
@@ -61,6 +54,7 @@ function isMobile() {
         });
       }
   
+      // Adjust video sizing
       function adjustVideoSizing() {
         const containerAspectRatio = (vimeoElement.offsetHeight / vimeoElement.offsetWidth) * 100;
         const iframeWrapper = vimeoElement.querySelector('.vimeo-bg__iframe-wrapper');
@@ -81,23 +75,26 @@ function isMobile() {
         vimeoElement.setAttribute('data-vimeo-loaded', 'true');
       });
   
-      // Scroll-based autoplay
+      // Scroll-based autoplay if needed
       if (vimeoElement.getAttribute('data-vimeo-autoplay') !== 'false') {
         let pausedByUser = vimeoElement.getAttribute('data-vimeo-paused-by-user') === 'true';
   
         function checkVisibility() {
           if (pausedByUser) return;
-  
           const rect = vimeoElement.getBoundingClientRect();
           const inView = rect.top < window.innerHeight && rect.bottom > 0;
-          inView ? player.play() : player.pause();
+          if (inView) {
+            player.play();
+          } else {
+            player.pause();
+          }
         }
   
         checkVisibility();
         window.addEventListener('scroll', checkVisibility);
       }
   
-      // Manual play/pause controls
+      // Manual play/pause buttons
       const playBtn = vimeoElement.querySelector('[data-vimeo-control="play"]');
       const pauseBtn = vimeoElement.querySelector('[data-vimeo-control="pause"]');
   
@@ -116,13 +113,13 @@ function isMobile() {
     });
   }
   
-  // Initialize everything on page load
-  window.addEventListener('DOMContentLoaded', function() {
+  // On DOM ready
+  document.addEventListener('DOMContentLoaded', function() {
     updateMediaSources();
     initVimeoBGVideo();
   });
   
-  // Update media sources on window resize
+  // On resize
   window.addEventListener('resize', function() {
     updateMediaSources();
   });  
