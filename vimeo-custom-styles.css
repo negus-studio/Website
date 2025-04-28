@@ -1,0 +1,126 @@
+.vimeo-bg {
+    pointer-events: auto;
+    color: #efeeec;
+    isolation: isolate;
+    background-color: #131313;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    position: absolute;
+    top: 0;
+    left: 0;
+    overflow: hidden;
+    transform: translateX(0);
+  }
+  
+  .vimeo-bg-video {
+    background-color: #000;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+  
+  .vimeo-bg__iframe-wrapper {
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    display: flex;
+    position: absolute;
+  }
+  
+  .vimeo-bg__before {
+    padding-top: 62.5%;
+  }
+  
+  .vimeo-bg__iframe {
+    pointer-events: none;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+  }
+  
+  .vimeo-bg__placeholder {
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+    transition: opacity .3s linear;
+    display: block;
+    position: absolute;
+  }
+  
+  .vimeo-bg[data-vimeo-activated="true"][data-vimeo-loaded="true"] .vimeo-bg__placeholder {
+    opacity: 0;
+    transition-delay: 0.2s;
+  }
+  
+  /* Optional: Play/Pause */
+  
+  .vimeo-bg__btn {
+    -webkit-backdrop-filter: blur(1em);
+    backdrop-filter: blur(1em);
+    background-color: #64646433;
+    border-radius: 50%;
+    justify-content: center;
+    align-items: center;
+    width: 3em;
+    height: 3em;
+    transition: opacity .3s linear;
+    display: flex;
+    position: relative;
+  }
+  
+  .vimeo-bg__play {
+    cursor: pointer;
+    border-radius: 50%;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    position: absolute;
+    bottom: 4vw;
+    right: 4vw;
+  }
+  
+  .vimeo-bg__btn-play-svg {
+    width: 40%;
+  }
+  
+  .vimeo-bg__pause {
+    cursor: pointer;
+    border-radius: 50%;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    position: absolute;
+    bottom: 4vw;
+    right: 4vw;
+    display: none;
+  }
+  
+  .vimeo-bg[data-vimeo-playing="true"] .vimeo-bg__pause {
+    display: flex;
+  }
+  
+  .vimeo-bg__btn-pause-svg {
+    width: 50%;
+  }
+  
+  .vimeo-bg[data-vimeo-playing="true"] .vimeo-bg__pause,
+  .vimeo-bg[data-vimeo-playing="false"] .vimeo-bg__play {
+    opacity: 1;
+  }
+  
+  .vimeo-bg[data-vimeo-playing="true"] .vimeo-bg__play,
+  .vimeo-bg[data-vimeo-playing="false"] .vimeo-bg__pause {
+    opacity: 0;
+  }
+  
+  @media screen and (max-width: 991px) {
+    .vimeo-bg__play, .vimeo-bg__pause {
+      bottom: 1em;
+      right: 1em;
+    }
+  }
