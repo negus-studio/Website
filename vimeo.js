@@ -130,3 +130,14 @@ function initVimeoBGVideo() {
 document.addEventListener('DOMContentLoaded', function() {
   initVimeoBGVideo();
 });
+
+function handleVimeoAutoplay(section) {
+  const vimeoElements = section.querySelectorAll('[data-vimeo-bg-init]');
+  vimeoElements.forEach(function(vimeoElement) {
+    const iframeID = vimeoElement.id;
+    const player = new Vimeo.Player(iframeID);
+    player.play();
+    vimeoElement.setAttribute('data-vimeo-activated', 'true');
+    vimeoElement.setAttribute('data-vimeo-playing', 'true');
+  });
+}
