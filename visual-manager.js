@@ -22,7 +22,7 @@ function updateMediaSources() {
 // On page load
 window.addEventListener('DOMContentLoaded', () => {
   updateMediaSources();
-  setupVimeoAutoplay();
+  //setupVimeoAutoplay();
 });
 
 // Also update on window resize
